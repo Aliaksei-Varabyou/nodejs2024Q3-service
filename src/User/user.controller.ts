@@ -6,10 +6,8 @@ import {
   Delete,
   Body,
   Param,
-  HttpCode,
-  HttpStatus,
 } from '@nestjs/common';
-import { CreateUserDto, UpdatePasswordDto } from './dto';
+import { CreateUserDto, UpdatePasswordDto } from './dto/index';
 import { UserService } from './user.service';
 
 @Controller('user')
