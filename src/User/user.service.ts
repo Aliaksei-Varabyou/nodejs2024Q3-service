@@ -1,5 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { v4 as uuidv4 } from 'uuid';
+import { instanceToPlain } from 'class-transformer';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { CreateUserDto, UpdatePasswordDto } from './dto/index';
@@ -15,23 +22,31 @@ export class UserService {
     return this.userRepository.find();
   }
 
-  async findById(id: string): Promise<User> {
-    return this.userRepository.findOneOrFail({
+  async findById(id: string): Promise<object> {
+    const user = await this.userRepository.findOne({
       where: {
         id: id,
       },
     });
+    if (!user) {
+      throw new NotFoundException(`User with ID "${id}" not found`);
+    }
+    return instanceToPlain(new User(user));
   }
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<object> {
+    if (!createUserDto.login || !createUserDto.password) {
+      throw new BadRequestException('Incorrect Data');
+    }
     const newUser = this.userRepository.create({
       ...createUserDto,
-      id: generateUuid(),
+      id: uuidv4(),
       createdAt: Date.now(),
       updatedAt: Date.now(),
       version: 1,
     });
-    return this.userRepository.save(newUser);
+    const savedUser = await this.userRepository.save(newUser);
+    return instanceToPlain(new User(savedUser));
   }
 
   async delete(id: string): Promise<void> {
@@ -44,19 +59,26 @@ export class UserService {
   async updatePassword(
     id: string,
     updatePasswordDto: UpdatePasswordDto,
-  ): Promise<User> {
-    const user = await this.findById(id);
+  ): Promise<object> {
+    if (!updatePasswordDto.oldPassword || !updatePasswordDto.newPassword) {
+      throw new BadRequestException('Incorrect Data');
+    }
+    const user = await this.userRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
     if (!user) {
       throw new NotFoundException(`User with ID "${id}" not found`);
     }
     if (user.password !== updatePasswordDto.oldPassword) {
-      throw new Error('Old password does not match');
+      throw new ForbiddenException('Old password does not match');
     }
 
     user.password = updatePasswordDto.newPassword;
     user.updatedAt = Date.now();
     user.version++;
     await this.userRepository.save(user);
-    return user;
+    return instanceToPlain(new User(user));
   }
 }

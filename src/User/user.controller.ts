@@ -6,9 +6,14 @@ import {
   Delete,
   Body,
   Param,
+  HttpCode,
+  HttpStatus,
+  BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto, UpdatePasswordDto } from './dto/index';
 import { UserService } from './user.service';
+import { isUUID } from 'class-validator';
 
 @Controller('user')
 export class UserController {
@@ -20,8 +25,15 @@ export class UserController {
   }
 
   @Get(':id')
-  getUserById(@Param('id') id: string) {
-    return this.userService.findById(id);
+  async getUserById(@Param('id') id: string) {
+    if (!isUUID(id)) {
+      throw new BadRequestException('Invalid ID format');
+    }
+    const user = await this.userService.findById(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
   }
 
   @Post()
@@ -34,11 +46,18 @@ export class UserController {
     @Param('id') id: string,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
+    if (!isUUID(id)) {
+      throw new BadRequestException('Invalid ID format');
+    }
     return this.userService.updatePassword(id, updatePasswordDto);
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   deleteUser(@Param('id') id: string) {
+    if (!isUUID(id)) {
+      throw new BadRequestException('Invalid ID format');
+    }
     return this.userService.delete(id);
   }
 }
