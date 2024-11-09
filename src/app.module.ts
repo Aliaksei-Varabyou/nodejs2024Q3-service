@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { UserModule } from './User/user.module';
 import { TrackModule } from './Track/track.module';
 import { ArtistModule } from './Artist/artist.module';
+import { AlbumModule } from './Album/album.module';
 
 @Module({
   imports: [
@@ -15,10 +16,14 @@ import { ArtistModule } from './Artist/artist.module';
       entities: [join(__dirname, '**', '*.entity{.ts,.js}')],
       synchronize: true,
       logging: true,
+      extra: {
+        foreignKeys: true,
+      },
     }),
     UserModule,
     TrackModule,
     ArtistModule,
+    AlbumModule,
   ],
   controllers: [AppController],
   providers: [AppService],
