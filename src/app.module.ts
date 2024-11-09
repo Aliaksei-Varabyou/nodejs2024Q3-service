@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './User/user.module';
+import { TrackModule } from './Track/track.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { UserModule } from './User/user.module';
       logging: true,
     }),
     UserModule,
+    TrackModule,
   ],
   controllers: [AppController],
   providers: [AppService],
