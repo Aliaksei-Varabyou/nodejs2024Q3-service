@@ -1,6 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { Artist } from 'src/Artist/artist.entity';
 import { Album } from 'src/Album/album.entity';
+import { Favorite } from 'src/Favorite/fav.entity';
 
 @Entity()
 export class Track {
@@ -24,4 +31,9 @@ export class Track {
 
   @Column()
   duration: number;
+
+  @OneToMany(() => Favorite, (favorite) => favorite.trackId, {
+    onDelete: 'SET NULL',
+  })
+  favorites: Favorite[];
 }

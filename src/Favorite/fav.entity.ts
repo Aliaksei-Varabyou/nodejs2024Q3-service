@@ -8,21 +8,21 @@ export class Favorite {
   @PrimaryColumn()
   userId: string;
 
-  @ManyToOne(() => Artist, { nullable: true })
+  @ManyToOne(() => Artist, { nullable: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'artistId' })
   artist: Artist;
 
   @Column({ nullable: true })
   artistId: string;
 
-  @ManyToOne(() => Album, { nullable: true })
+  @ManyToOne(() => Album, { nullable: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'albumId' })
   album: Album;
 
   @Column({ nullable: true })
   albumId: string;
 
-  @ManyToOne(() => Track, { nullable: true })
+  @ManyToOne(() => Track, { nullable: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'trackId' })
   track: Track;
 

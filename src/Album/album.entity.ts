@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Artist } from 'src/Artist/artist.entity';
 import { Track } from 'src/Track/track.entity';
+import { Favorite } from 'src/Favorite/fav.entity';
 
 @Entity()
 export class Album {
@@ -29,4 +30,9 @@ export class Album {
 
   @OneToMany(() => Track, (track) => track.albumId, { onDelete: 'SET NULL' })
   tracks: Track[];
+
+  @OneToMany(() => Favorite, (favorite) => favorite.trackId, {
+    onDelete: 'SET NULL',
+  })
+  favorites: Favorite[];
 }
