@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: db123
+      POSTGRES_USER: user123
+      POSTGRES_PASSWORD: password123
+    ports:
+      - "5432:5432"
+
+  app:
+    image: my-node-app
+    build: ./src
+    ports:
+      - "4000:4000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_HOST: db
+      DATABASE_USER: user123
+      DATABASE_PASSWORD: password123
+      DATABASE_NAME: db123
+      DATABASE_PORT: 5432
+
+volumes:
+  postgres_data:
