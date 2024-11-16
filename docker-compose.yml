@@ -1,7 +1,9 @@
 services:
   db:
-    image: postgres:latest
+    image: my-node-app-db
     restart: unless-stopped
+    build: 
+      context: ./db
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - postgres_logs:/var/log/postgresql
@@ -17,7 +19,6 @@ services:
   app:
     image: my-node-app
     restart: unless-stopped
-    build: ./src
     volumes:
       - src:/usr/app/src
     ports:
