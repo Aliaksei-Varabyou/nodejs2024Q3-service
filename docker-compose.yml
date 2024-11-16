@@ -1,18 +1,25 @@
 services:
   db:
     image: postgres:latest
+    restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - postgres_logs:/var/log/postgresql
     environment:
       POSTGRES_DB: db123
       POSTGRES_USER: user123
       POSTGRES_PASSWORD: password123
     ports:
       - "5432:5432"
+    networks:
+      - my-network
 
   app:
     image: my-node-app
+    restart: unless-stopped
     build: ./src
+    volumes:
+      - src:/usr/app/src
     ports:
       - "4000:4000"
     depends_on:
@@ -23,6 +30,15 @@ services:
       DATABASE_PASSWORD: password123
       DATABASE_NAME: db123
       DATABASE_PORT: 5432
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    name: my-network
+    driver: bridge
 
 volumes:
   postgres_data:
+  postgres_logs:
+  src:
