@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { Album } from './album.entity';
 import { Artist } from 'src/Artist/artist.entity';
 import { CreateAlbumDto, UpdateAlbumDto } from './dto';
+import { isUUID } from 'class-validator';
 
 @Injectable()
 export class AlbumService {
@@ -64,6 +65,11 @@ export class AlbumService {
     const album = await this.albumRepository.findOne({ where: { id: id } });
     if (!album) {
       throw new NotFoundException(`Album with ID "${id}" not found`);
+    }
+    if (!isUUID(updateAlbumDto.artistId)) {
+      throw new BadRequestException(
+        `Artist with ID "${updateAlbumDto.artistId}" does not exist`,
+      );
     }
     const artist = await this.artistRepository.findOne({
       where: { id: updateAlbumDto.artistId },

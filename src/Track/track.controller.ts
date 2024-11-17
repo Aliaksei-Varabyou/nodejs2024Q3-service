@@ -8,11 +8,10 @@ import {
   Param,
   HttpCode,
   HttpStatus,
-  BadRequestException,
   NotFoundException,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { TrackService } from './track.service';
-import { isUUID } from 'class-validator';
 import { CreateTrackDto, UpdateTrackDto } from './dto/';
 
 @Controller('track')
@@ -25,10 +24,7 @@ export class TrackController {
   }
 
   @Get(':id')
-  async getTrackById(@Param('id') id: string) {
-    if (!isUUID(id)) {
-      throw new BadRequestException('Invalid ID format');
-    }
+  async getTrackById(@Param('id', ParseUUIDPipe) id: string) {
     const track = await this.trackService.findById(id);
     if (!track) {
       throw new NotFoundException('Track not found');
@@ -43,21 +39,15 @@ export class TrackController {
 
   @Put(':id')
   updateTrackInfo(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateTrackDto: UpdateTrackDto,
   ) {
-    if (!isUUID(id)) {
-      throw new BadRequestException('Invalid ID format');
-    }
     return this.trackService.updateTrack(id, updateTrackDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteTrack(@Param('id') id: string) {
-    if (!isUUID(id)) {
-      throw new BadRequestException('Invalid ID format');
-    }
+  deleteTrack(@Param('id', ParseUUIDPipe) id: string) {
     return this.trackService.delete(id);
   }
 }

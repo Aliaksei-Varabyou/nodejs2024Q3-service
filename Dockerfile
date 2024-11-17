@@ -7,4 +7,4 @@ RUN npm install && npm cache clean --force
 
 COPY . .
 
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "start:dev"]

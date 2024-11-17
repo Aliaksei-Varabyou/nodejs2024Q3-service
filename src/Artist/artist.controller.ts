@@ -8,11 +8,10 @@ import {
   Param,
   HttpCode,
   HttpStatus,
-  BadRequestException,
   NotFoundException,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ArtistService } from './artist.service';
-import { isUUID } from 'class-validator';
 import { CreateArtistDto, UpdateArtistDto } from './dto/';
 
 @Controller('artist')
@@ -25,10 +24,7 @@ export class ArtistController {
   }
 
   @Get(':id')
-  async getArtistById(@Param('id') id: string) {
-    if (!isUUID(id)) {
-      throw new BadRequestException('Invalid ID format');
-    }
+  async getArtistById(@Param('id', ParseUUIDPipe) id: string) {
     const artist = await this.artistService.findById(id);
     if (!artist) {
       throw new NotFoundException('Artist not found');
@@ -43,21 +39,15 @@ export class ArtistController {
 
   @Put(':id')
   updateArtistInfo(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateArtistDto: UpdateArtistDto,
   ) {
-    if (!isUUID(id)) {
-      throw new BadRequestException('Invalid ID format');
-    }
     return this.artistService.updateArtist(id, updateArtistDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteArtist(@Param('id') id: string) {
-    if (!isUUID(id)) {
-      throw new BadRequestException('Invalid ID format');
-    }
+  deleteArtist(@Param('id', ParseUUIDPipe) id: string) {
     return this.artistService.delete(id);
   }
 }

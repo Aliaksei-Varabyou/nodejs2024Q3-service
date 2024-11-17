@@ -19,8 +19,9 @@ services:
   app:
     image: my-node-app
     restart: unless-stopped
+    build: .
     volumes:
-      - src:/usr/app/src
+      - ./src:/usr/app/src
     ports:
       - "4000:4000"
     depends_on:

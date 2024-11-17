@@ -8,11 +8,10 @@ import {
   Param,
   HttpCode,
   HttpStatus,
-  BadRequestException,
   NotFoundException,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { AlbumService } from './album.service';
-import { isUUID } from 'class-validator';
 import { CreateAlbumDto, UpdateAlbumDto } from './dto';
 
 @Controller('album')
@@ -25,10 +24,7 @@ export class AlbumController {
   }
 
   @Get(':id')
-  async getAlbumById(@Param('id') id: string) {
-    if (!isUUID(id)) {
-      throw new BadRequestException('Invalid ID format');
-    }
+  async getAlbumById(@Param('id', ParseUUIDPipe) id: string) {
     const album = await this.albumService.findById(id);
     if (!album) {
       throw new NotFoundException('Album not found');
@@ -43,21 +39,15 @@ export class AlbumController {
 
   @Put(':id')
   updateAlbumInfo(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ) {
-    if (!isUUID(id)) {
-      throw new BadRequestException('Invalid ID format');
-    }
     return this.albumService.updateAlbum(id, updateAlbumDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteAlbum(@Param('id') id: string) {
-    if (!isUUID(id)) {
-      throw new BadRequestException('Invalid ID format');
-    }
+  deleteAlbum(@Param('id', ParseUUIDPipe) id: string) {
     return this.albumService.delete(id);
   }
 }
