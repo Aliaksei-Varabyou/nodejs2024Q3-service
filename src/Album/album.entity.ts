@@ -6,9 +6,9 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
-import { Artist } from 'src/Artist/artist.entity';
-import { Track } from 'src/Track/track.entity';
-import { Favorite } from 'src/Favorite/fav.entity';
+import { Artist } from '../Artist/artist.entity';
+import { Track } from '../Track/track.entity';
+import { Favorite } from '../Favorite/fav.entity';
 
 @Entity()
 export class Album {

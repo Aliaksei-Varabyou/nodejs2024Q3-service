@@ -8,37 +8,37 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - postgres_logs:/var/log/postgresql
     environment:
-      POSTGRES_DB: db123
-      POSTGRES_USER: user123
-      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     ports:
-      - "5432:5432"
+      - "${DATABASE_PORT}:${DATABASE_PORT}"
     networks:
-      - my-network
+      - ${NETWORK_NAME}
 
   app:
     image: my-node-app
     restart: unless-stopped
     build: .
     volumes:
-      - ./src:/usr/app/src
+      - src:/usr/app/src
     ports:
-      - "4000:4000"
+      - "${PORT}:${PORT}"
     depends_on:
       - db
     environment:
-      DATABASE_HOST: db
-      DATABASE_USER: user123
-      DATABASE_PASSWORD: password123
-      DATABASE_NAME: db123
-      DATABASE_PORT: 5432
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_PORT: ${DATABASE_PORT}
     networks:
-      - my-network
+      - ${NETWORK_NAME}
 
 networks:
   my-network:
-    name: my-network
-    driver: bridge
+    name: ${NETWORK_NAME}
+    driver: ${NETWORK_DRIVER}
 
 volumes:
   postgres_data:
