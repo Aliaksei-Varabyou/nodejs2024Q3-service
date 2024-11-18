@@ -9,6 +9,7 @@ npm install
 
 ## Setting server variables
 
+```
 cp .env.example .env
 ```
 
