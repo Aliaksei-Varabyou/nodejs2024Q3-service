@@ -19,8 +19,8 @@ import { FavModule } from './Favorite/fav.module';
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       entities: [join(__dirname, '**', '*.entity{.ts,.js}')],
-      synchronize: false,
-      logging: false,
+      synchronize: true,
+      logging: true,
       extra: {
         foreignKeys: true,
       },

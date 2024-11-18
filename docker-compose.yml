@@ -1,6 +1,6 @@
 services:
   db:
-    image: my-node-app-db
+    image: aliakseivarabyou/my-node-app-db:latest
     restart: unless-stopped
     build: 
       context: ./db
@@ -17,11 +17,11 @@ services:
       - ${NETWORK_NAME}
 
   app:
-    image: my-node-app
+    image: aliakseivarabyou/my-node-app:latest
     restart: unless-stopped
     build: .
     volumes:
-      - src:/usr/app/src
+      - ./src:/usr/app/src
     ports:
       - "${PORT}:${PORT}"
     depends_on:
