@@ -24,7 +24,8 @@
     "migration:generate": "npx typeorm-ts-node-commonjs migration:generate ./src/migrations/initial -d ./src/database/data-source.ts",
     "migration:show": "npx typeorm-ts-node-commonjs migration:show -d ./src/database/data-source.ts",
     "migration:run": "npx typeorm-ts-node-commonjs migration:run -d  ./src/database/data-source.ts",
-    "migration:revert": "npx typeorm-ts-node-commonjs migration:revert -d ./src/database/data-source.ts"
+    "migration:revert": "npx typeorm-ts-node-commonjs migration:revert -d ./src/database/data-source.ts",
+    "audit": "npm audit --audit-level=high"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
