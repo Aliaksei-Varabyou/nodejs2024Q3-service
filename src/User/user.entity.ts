@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { Exclude } from 'class-transformer';
+import { Exclude, Type } from 'class-transformer';
 
 @Entity()
 export class User {
@@ -16,11 +16,13 @@ export class User {
   @Column()
   version: number;
 
-  @Column()
-  createdAt: number;
+  @Column({ type: 'bigint', nullable: true })
+  @Type(() => Number)
+  createdAt: number | null;
 
-  @Column()
-  updatedAt: number;
+  @Column({ type: 'bigint', nullable: true })
+  @Type(() => Number)
+  updatedAt: number | null;
 
   constructor(partial: Partial<User>) {
     Object.assign(this, partial);

@@ -1,0 +1,46 @@
+services:
+  db:
+    image: aliakseivarabyou/my-node-app-db:latest
+    restart: unless-stopped
+    build: 
+      context: ./db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_logs:/var/log/postgresql
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "${DATABASE_PORT}:${DATABASE_PORT}"
+    networks:
+      - ${NETWORK_NAME}
+
+  app:
+    image: aliakseivarabyou/my-node-app:latest
+    restart: unless-stopped
+    build: .
+    volumes:
+      - ./src:/usr/app/src
+    ports:
+      - "${PORT}:${PORT}"
+    depends_on:
+      - db
+    environment:
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_PORT: ${DATABASE_PORT}
+    networks:
+      - ${NETWORK_NAME}
+
+networks:
+  my-network:
+    name: ${NETWORK_NAME}
+    driver: ${NETWORK_DRIVER}
+
+volumes:
+  postgres_data:
+  postgres_logs:
+  src:

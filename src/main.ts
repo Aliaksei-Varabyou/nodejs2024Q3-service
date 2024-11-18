@@ -11,7 +11,7 @@ async function bootstrap() {
   const yamlDocument = YAML.load('./doc/api.yaml');
   app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(yamlDocument));
 
-  const port = parseInt(process.env.PORT || '3000', 10);
+  const port = parseInt(process.env.PORT || '4000', 10);
   await app.listen(port);
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
