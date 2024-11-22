@@ -1,12 +1,76 @@
 import { Injectable } from '@nestjs/common';
+import * as winston from 'winston';
+import 'winston-daily-rotate-file';
+import DailyRotateFile from 'winston-daily-rotate-file';
+
+type LEVELS = 'info' | 'error' | 'debug' | 'warn';
 
 @Injectable()
 export class LoggingService {
-  log(message: string, level: 'info' | 'error' = 'info') {
-    if (level === 'error') {
-      console.error(message);
+  private logger: winston.Logger;
+  static logger: any;
+
+  constructor() {
+    const logLevel = process.env.LOG_LEVEL || 'info';
+    const logToFile = process.env.LOG_TO_FILE === 'true';
+
+    const logFormat = winston.format.combine(
+      winston.format.timestamp({
+        format: 'YYYY-MM-DD HH:mm:ss',
+      }),
+      winston.format.printf(
+        (info) =>
+          `${info.timestamp} [${info.level.toUpperCase()}]: ${info.message}`,
+      ),
+    );
+
+    this.logger = winston.createLogger({
+      level: logLevel,
+      format: logFormat,
+      transports: [],
+    });
+
+    if (logToFile) {
+      this.logger.add(
+        new DailyRotateFile({
+          filename: 'logs/application-%DATE%.log',
+          datePattern: 'YYYY-MM-DD',
+          zippedArchive: true,
+          maxSize: '20m',
+          maxFiles: '14d',
+          level: logLevel,
+        }),
+      );
     } else {
-      console.log(message);
+      this.logger.add(
+        new winston.transports.Console({
+          format: winston.format.simple(),
+          level: logLevel,
+        }),
+      );
     }
+  }
+
+  log(message: string, level: LEVELS = 'info') {
+    this.logger.log({
+      level: level,
+      message: message,
+    });
+  }
+
+  error(message: string) {
+    this.log(message, 'error');
+  }
+
+  info(message: string) {
+    this.log(message, 'info');
+  }
+
+  warning(message: string) {
+    this.log(message, 'warn');
+  }
+
+  debug(message: string) {
+    this.log(message, 'debug');
   }
 }
