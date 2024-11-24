@@ -33,13 +33,13 @@ Check vulnerabilities (only if docker was started)
 npm run docker:audit
 ```
 
-create empty migration
+Create empty migration
 
 ```
 npm run migration:create
 ```
 
-migration for generate bd
+Migration for generate bd
 
 ```
 npm run migration:generate

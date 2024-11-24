@@ -8,6 +8,7 @@ import { TrackModule } from './Track/track.module';
 import { ArtistModule } from './Artist/artist.module';
 import { AlbumModule } from './Album/album.module';
 import { FavModule } from './Favorite/fav.module';
+import LoggingService from './Logging/logging.service';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { FavModule } from './Favorite/fav.module';
       database: process.env.DATABASE_NAME,
       entities: [join(__dirname, '**', '*.entity{.ts,.js}')],
       synchronize: true,
-      logging: true,
+      logging: false,
       extra: {
         foreignKeys: true,
       },
@@ -34,6 +35,7 @@ import { FavModule } from './Favorite/fav.module';
     FavModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, LoggingService],
+  exports: [LoggingService],
 })
 export class AppModule {}

@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import * as winston from 'winston';
 import 'winston-daily-rotate-file';
-import DailyRotateFile from 'winston-daily-rotate-file';
+import * as DailyRotateFile from 'winston-daily-rotate-file';
 
 type LEVELS = 'info' | 'error' | 'debug' | 'warn';
 
 @Injectable()
-export class LoggingService {
+export default class LoggingService {
   private logger: winston.Logger;
   static logger: any;
 
@@ -36,7 +36,7 @@ export class LoggingService {
           filename: 'logs/application-%DATE%.log',
           datePattern: 'YYYY-MM-DD',
           zippedArchive: true,
-          maxSize: '20m',
+          maxSize: '100k',
           maxFiles: '14d',
           level: logLevel,
         }),
