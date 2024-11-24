@@ -13,6 +13,7 @@ export default class LoggingService {
   constructor() {
     const logLevel = process.env.LOG_LEVEL || 'info';
     const logToFile = process.env.LOG_TO_FILE === 'true';
+    const logMaxFileSize = process.env.LOG_MAX_FILE_SIZE || '100k';
 
     const logFormat = winston.format.combine(
       winston.format.timestamp({
@@ -36,7 +37,7 @@ export default class LoggingService {
           filename: 'logs/application-%DATE%.log',
           datePattern: 'YYYY-MM-DD',
           zippedArchive: true,
-          maxSize: '100k',
+          maxSize: logMaxFileSize,
           maxFiles: '14d',
           level: logLevel,
         }),
