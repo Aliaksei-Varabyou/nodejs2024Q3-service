@@ -3,8 +3,8 @@ import {
   Post,
   Body,
   HttpStatus,
-  HttpCode,
   UseGuards,
+  HttpException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
@@ -23,13 +23,11 @@ export class AuthController {
     ) {
       return { statusCode: HttpStatus.BAD_REQUEST, message: 'Invalid data' };
     }
-    await this.authService.signup(body.login, body.password);
-    return { statusCode: HttpStatus.CREATED, message: 'User created' };
+    return await this.authService.signup(body.login, body.password);
   }
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  @HttpCode(HttpStatus.OK)
   async login(@Body() body: any) {
     const user = await this.authService.validateUser(body.login, body.password);
     if (!user) {
@@ -46,6 +44,10 @@ export class AuthController {
     if (!body.refreshToken) {
       return { statusCode: HttpStatus.UNAUTHORIZED, message: 'Invalid token' };
     }
-    // logic for review tokens
+    try {
+      return await this.authService.refresh(body.refreshToken);
+    } catch (error) {
+      throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
+    }
   }
 }

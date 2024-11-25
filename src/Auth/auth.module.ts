@@ -8,15 +8,13 @@ import { LocalStrategy } from './local.strategy';
 import { UserModule } from 'src/User/user.module';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
-const secret_key = process.env.JWT_SECRET_KEY || 'secret_key';
-
 @Module({
   imports: [
     UserModule,
     PassportModule,
     JwtModule.register({
-      secret: secret_key,
-      signOptions: { expiresIn: '15m' },
+      secret: process.env.JWT_SECRET_KEY,
+      signOptions: { expiresIn: process.env.TOKEN_EXPIRE_TIME },
     }),
   ],
   providers: [AuthService, JwtStrategy, LocalStrategy, JwtAuthGuard],
