@@ -25,6 +25,7 @@ services:
     volumes:
       - ./src:/usr/app/src
       - ./logs:/usr/app/logs
+      - ./.env:/usr/app/.env
     ports:
       - "${PORT}:${PORT}"
     depends_on:

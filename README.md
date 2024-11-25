@@ -12,6 +12,7 @@ npm install
 ```
 cp .env.example .env
 ```
+!Important: If you have changed the values ​​in the .env file, you need to restart docker container ("docker compose down" and then "docker compose up")
 
 ## Working with application
 
