@@ -9,6 +9,7 @@ import { ArtistModule } from './Artist/artist.module';
 import { AlbumModule } from './Album/album.module';
 import { FavModule } from './Favorite/fav.module';
 import LoggingService from './Logging/logging.service';
+import { AuthModule } from './Auth/auth.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import LoggingService from './Logging/logging.service';
     ArtistModule,
     AlbumModule,
     FavModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, LoggingService],
