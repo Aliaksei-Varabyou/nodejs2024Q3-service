@@ -4,10 +4,12 @@ import {
   Body,
   HttpStatus,
   UseGuards,
-  HttpException,
+  HttpCode,
+  ForbiddenException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
+import { Public } from './public.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -40,14 +42,16 @@ export class AuthController {
   }
 
   @Post('refresh')
+  @Public()
+  @HttpCode(HttpStatus.OK)
   async refresh(@Body() body: any) {
-    if (!body.refreshToken) {
-      return { statusCode: HttpStatus.UNAUTHORIZED, message: 'Invalid token' };
-    }
     try {
       return await this.authService.refresh(body.refreshToken);
     } catch (error) {
-      throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
+      if (error instanceof ForbiddenException) {
+        throw new ForbiddenException();
+      }
+      throw error;
     }
   }
 }

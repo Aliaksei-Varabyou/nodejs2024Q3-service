@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserService } from 'src/User/user.service';
@@ -13,7 +17,6 @@ export class AuthService {
   async validateUser(login: string, pass: string): Promise<any> {
     const user = await this.userService.findByLogin(login);
     const isValidPassword = await bcrypt.compare(pass, user.password);
-    console.log('USER VALIDATE', user, isValidPassword);
     if (user && isValidPassword) {
       const { password, ...result } = user;
       return result;
@@ -31,7 +34,7 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { login: user.login, id: user.userId };
+    const payload = { login: user.login, userId: user.id };
     return await this.generateTokens(payload);
   }
 
@@ -45,20 +48,21 @@ export class AuthService {
   }
 
   async refresh(refreshToken: string) {
+    if (!refreshToken) {
+      throw new UnauthorizedException();
+    }
     try {
       const decoded = await this.jwtService.verifyAsync(refreshToken, {
         secret: process.env.JWT_SECRET_REFRESH_KEY,
       });
       const user = await this.userService.findByLogin(decoded.login);
-
       if (!user) {
-        throw new UnauthorizedException('User not found');
+        throw new ForbiddenException('User not found');
       }
-
-      const payload = { login: user.login, id: user.id };
+      const payload = { login: decoded.login, userId: user.id };
       return await this.generateTokens(payload);
     } catch (error) {
-      throw new UnauthorizedException('Invalid token');
+      throw new ForbiddenException();
     }
   }
 }
