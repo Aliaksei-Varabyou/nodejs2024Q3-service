@@ -34,6 +34,10 @@ export class UserService {
     return instanceToPlain(new User(user));
   }
 
+  async findByLogin(login: string): Promise<User | undefined> {
+    return this.userRepository.findOne({ where: { login } });
+  }
+
   async create(createUserDto: CreateUserDto): Promise<object> {
     if (!createUserDto.login || !createUserDto.password) {
       throw new BadRequestException('Incorrect Data');
