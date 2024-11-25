@@ -1,6 +1,7 @@
 import { join } from 'node:path';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './User/user.module';
@@ -10,6 +11,7 @@ import { AlbumModule } from './Album/album.module';
 import { FavModule } from './Favorite/fav.module';
 import LoggingService from './Logging/logging.service';
 import { AuthModule } from './Auth/auth.module';
+import { AppGuard } from './app.guard';
 
 @Module({
   imports: [
@@ -37,7 +39,14 @@ import { AuthModule } from './Auth/auth.module';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService, LoggingService],
+  providers: [
+    AppService,
+    LoggingService,
+    {
+      provide: APP_GUARD,
+      useClass: AppGuard,
+    },
+  ],
   exports: [LoggingService],
 })
 export class AppModule {}

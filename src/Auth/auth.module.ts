@@ -6,6 +6,7 @@ import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from './auth.controller';
 import { LocalStrategy } from './local.strategy';
 import { UserModule } from 'src/User/user.module';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 const secret_key = process.env.JWT_SECRET_KEY || 'secret_key';
 
@@ -18,7 +19,8 @@ const secret_key = process.env.JWT_SECRET_KEY || 'secret_key';
       signOptions: { expiresIn: '15m' },
     }),
   ],
-  providers: [AuthService, JwtStrategy, LocalStrategy],
+  providers: [AuthService, JwtStrategy, LocalStrategy, JwtAuthGuard],
   controllers: [AuthController],
+  exports: [JwtAuthGuard],
 })
 export class AuthModule {}
